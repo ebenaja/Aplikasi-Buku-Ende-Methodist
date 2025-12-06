@@ -11,15 +11,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // 1. Variabel Master (Menyimpan SEMUA lagu dari server)
+  // --- KONSTANTA WARNA (Agar senada dengan Landing Page) ---
+  final Color primaryNavy = const Color(0xFF0D1B2A); // Biru Dongker Gelap
+  final Color accentGold = const Color(0xFFD4AF37);  // Emas Mewah
+  final Color bgPaper = const Color(0xFFF8F9FA);     // Putih Tulang (Kertas)
+
+  // 1. Variabel Data
   List<dynamic> allSongs = [];
-  
-  // 2. Variabel Filter (Yang ditampilkan di layar)
   List<dynamic> filteredSongs = [];
-  
   bool isLoading = true;
   
-  // GANTI IP INI SESUAI IP ANDA
+  // GANTI IP INI SESUAI KONFIGURASI ANDA
   final String apiUrl = "http://10.0.2.2:8000/api/songs";
 
   @override
@@ -28,18 +30,13 @@ class _HomePageState extends State<HomePage> {
     fetchSongs();
   }
 
-  // Fungsi ambil data dari Server
   Future<void> fetchSongs() async {
     try {
       final response = await http.get(Uri.parse(apiUrl));
-
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonData = json.decode(response.body);
         setState(() {
-          // Simpan ke Master Data
           allSongs = jsonData['data'];
-          
-          // Awalnya, data yang ditampilkan = semua data
           filteredSongs = allSongs; 
           isLoading = false;
         });
@@ -56,24 +53,18 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // 3. FUNGSI PENCARIAN (Logic Utama)
   void _runFilter(String enteredKeyword) {
     List<dynamic> results = [];
     if (enteredKeyword.isEmpty) {
-      // Jika kolom cari kosong, tampilkan semua lagu
       results = allSongs;
     } else {
-      // Filter berdasarkan JUDUL atau NOMOR
       results = allSongs.where((song) {
         final titleLower = song['title'].toString().toLowerCase();
         final numberString = song['number'].toString();
         final searchLower = enteredKeyword.toLowerCase();
-
         return titleLower.contains(searchLower) || numberString.contains(searchLower);
       }).toList();
     }
-
-    // Update tampilan
     setState(() {
       filteredSongs = results;
     });
@@ -82,126 +73,201 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bgPaper, // Latar belakang tidak putih polos, tapi agak abu terang
       appBar: AppBar(
-        title: const Text(
-          "Buku Ende Methodist",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        elevation: 0, 
+        backgroundColor: primaryNavy,
+        elevation: 0,
+        toolbarHeight: 0, // Sembunyikan AppBar standar, kita buat custom header
       ),
       body: Column(
         children: [
-          // 4. KOLOM PENCARIAN (SEARCH BAR)
+          // ==========================================
+          // 1. CUSTOM HEADER (Melengkung & Mewah)
+          // ==========================================
           Container(
-            padding: const EdgeInsets.all(16),
-            color: Colors.indigo, // Background header agar menyatu dengan AppBar
-            child: TextField(
-              onChanged: (value) => _runFilter(value), // Panggil fungsi filter saat mengetik
-              style: const TextStyle(color: Colors.black87),
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                hintText: "Cari Judul atau Nomor...",
-                prefixIcon: const Icon(Icons.search, color: Colors.indigo),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+            padding: const EdgeInsets.only(left: 20, right: 20, bottom: 25, top: 10),
+            decoration: BoxDecoration(
+              color: primaryNavy,
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(30),
+                bottomRight: Radius.circular(30),
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 10,
+                  offset: const Offset(0, 5),
+                )
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Judul Aplikasi Kecil
+                Row(
+                  children: [
+                    Icon(Icons.menu_book, color: accentGold, size: 28),
+                    const SizedBox(width: 10),
+                    const Text(
+                      "Buku Ende Methodist",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Serif', // Font Buku
+                        letterSpacing: 1,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                
+                // Search Bar Modern
+                TextField(
+                  onChanged: (value) => _runFilter(value),
+                  style: const TextStyle(color: Colors.black87),
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: "Cari Nomor atau Judul Lagu...",
+                    hintStyle: TextStyle(color: Colors.grey.shade500, fontSize: 14),
+                    prefixIcon: Icon(Icons.search, color: primaryNavy),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 15),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide.none,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
 
-          // 5. DAFTAR LAGU (LISTVIEW)
+          // ==========================================
+          // 2. DAFTAR LAGU
+          // ==========================================
           Expanded(
             child: isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? Center(child: CircularProgressIndicator(color: primaryNavy))
                 : filteredSongs.isEmpty
                     ? Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.search_off, size: 60, color: Colors.grey),
+                            Icon(Icons.library_music_outlined, size: 80, color: Colors.grey.shade300),
                             const SizedBox(height: 10),
                             Text(
                               "Lagu tidak ditemukan",
-                              style: TextStyle(color: Colors.grey[600], fontSize: 16),
+                              style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
                             ),
                           ],
                         ),
                       )
                     : ListView.builder(
-                        padding: const EdgeInsets.all(12),
-                        // PENTING: Gunakan 'filteredSongs', bukan 'allSongs'
-                        itemCount: filteredSongs.length, 
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                        // Bouncing scroll effect (Android 12+ / iOS style)
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: filteredSongs.length,
                         itemBuilder: (context, index) {
                           final song = filteredSongs[index];
-                          return Card(
-                            elevation: 2,
+                          return Container(
                             margin: const EdgeInsets.only(bottom: 12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(15),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.1),
+                                  blurRadius: 5,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
                             ),
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(12),
-                              // Logic Navigasi tetap sama, jadi file tetap bisa dibuka
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => SongDetailPage(song: song),
-                                  ),
-                                );
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 50,
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                        color: Colors.indigo.withOpacity(0.1),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        "${song['number']}",
-                                        style: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.indigo,
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(15),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => SongDetailPage(song: song),
+                                    ),
+                                  );
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Row(
+                                    children: [
+                                      // NOMOR LAGU (Aksen Emas)
+                                      Container(
+                                        width: 50,
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                          color: primaryNavy.withOpacity(0.05),
+                                          borderRadius: BorderRadius.circular(12),
+                                          border: Border.all(
+                                            color: accentGold.withOpacity(0.5),
+                                            width: 1.5,
+                                          ),
+                                        ),
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "${song['number']}",
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Serif',
+                                            color: primaryNavy,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    const SizedBox(width: 16),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            song['title'],
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
+                                      
+                                      const SizedBox(width: 16),
+                                      
+                                      // JUDUL & KATEGORI
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              song['title'],
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                                color: primaryNavy,
+                                                fontFamily: 'Serif', // Judul pakai Serif biar klasik
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
                                             ),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            song['category_name'] ?? 'Tanpa Kategori',
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                              color: Colors.grey[700],
+                                            const SizedBox(height: 6),
+                                            Row(
+                                              children: [
+                                                Icon(Icons.label_outline, 
+                                                  size: 14, color: Colors.grey.shade500),
+                                                const SizedBox(width: 4),
+                                                Text(
+                                                  song['category_name'] ?? 'Umum',
+                                                  style: TextStyle(
+                                                    fontSize: 13,
+                                                    color: Colors.grey.shade600,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    const Icon(Icons.chevron_right, color: Colors.grey),
-                                  ],
+                                      
+                                      // ARROW ICON
+                                      Icon(Icons.chevron_right_rounded, color: Colors.grey.shade300),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
