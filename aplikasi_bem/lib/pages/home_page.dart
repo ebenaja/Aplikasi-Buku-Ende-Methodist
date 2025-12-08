@@ -120,7 +120,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 
                 // Search Bar Modern
                 TextField(
@@ -190,7 +190,7 @@ class _HomePageState extends State<HomePage> {
                             child: Material(
                               color: Colors.transparent,
                               child: InkWell(
-                                borderRadius: BorderRadius.circular(15),
+                                borderRadius: BorderRadius.circular(10),
                                 onTap: () {
                                   Navigator.push(
                                     context,
@@ -252,7 +252,7 @@ class _HomePageState extends State<HomePage> {
                                                   size: 14, color: Colors.grey.shade500),
                                                 const SizedBox(width: 4),
                                                 Text(
-                                                  song['category_name'] ?? 'Umum',
+                                                  song['category_name'] ?? '//',
                                                   style: TextStyle(
                                                     fontSize: 13,
                                                     color: Colors.grey.shade600,
