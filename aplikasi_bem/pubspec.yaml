@@ -1,26 +1,67 @@
 name: aplikasi_bem
-description: "A new Flutter project."
+description: "Aplikasi Buku Ende Methodist Offline"
 publish_to: 'none'
 
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.10.1
+  sdk: '>=3.10.1 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
+
   cupertino_icons: ^1.0.8
-  http: ^1.2.0
-  flutter_markdown: ^0.6.20
+
+  shared_preferences: ^2.1.1
+
+  # Database lokal
+  sqflite: ^2.3.0
+  path: ^1.8.3
+
+  # Animasi UI
+  animate_do: ^3.3.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^6.0.0
+  flutter_lints: ^2.0.0
+
+  # Splash Screen
+  flutter_native_splash: ^2.4.0
 
 flutter:
   uses-material-design: true
+
   assets:
+    # --- GAMBAR UMUM ---
     - assets/images/
+
+    # --- LOGO ---
     - assets/logo/logo_methodist.png
+
+    # --- FILE MD (Buku Ende, Doa, dll) ---
+    - assets/md/
+
+    # --- NRM (WAJIB UNTUK 0.jpg - 297.jpg) ---
+    - assets/nrm/
+
+fonts:
+  - family: Merriweather
+    fonts:
+      - asset: assets/fonts/Merriweather-Regular.ttf
+      - asset: assets/fonts/Merriweather-Bold.ttf
+        weight: 700
+        
+flutter_icons:
+  android: true
+  ios: true
+  image_path: assets/logo/logo_methodist.png
+
+# --- SPLASH SCREEN ---
+flutter_native_splash:
+  color: "#0D1B2A"
+  image: assets/logo/logo_methodist.png
+  android_12:
+    image: assets/logo/logo_methodist.png
+    icon_background_color: "#0D1B2A"

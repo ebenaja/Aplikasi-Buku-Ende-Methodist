@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'pages/landing_page.dart'; 
-// -----------------------------
+import 'pages/landing_page.dart'; // Pastikan path benar
 
 void main() {
   runApp(const MyApp());
@@ -13,13 +12,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Aplikasi Buku Ende Methodist',
+      title: 'Himnal +',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0D1B2A)),
         useMaterial3: true,
-        fontFamily: 'Serif', 
       ),
-      home: const LandingPage(), 
+      home: const LandingPage(),  // Halaman pertama
     );
   }
 }
