@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
-import 'buku_ende_page.dart';
-import 'doa_bapa_kami_page.dart';
-import 'landing_page.dart';
-import 'pengakuan_iman_rasuli_page.dart';
-import 'nrm_page.dart';
-import 'doa_pengampunan_dosa_page.dart';
-import 'database_jemaat_page.dart';
+
+// --- IMPORT SESUAI STRUKTUR FOLDER BARU ---
+import 'landing_page.dart'; // Tetap di folder pages
+
+// Fitur BEM
+import '../features/bem/bem_page.dart'; 
+
+// Fitur Doa (Dashboard Doa)
+import '../features/doa/dashboard_doa_page.dart'; 
+
+// Fitur NRM
+// Sesuai screenshot, file selection ada di dalam nrm_merah 
+// (Atau sesuaikan jika Anda memindahkannya ke features/nrm/)
+import '../features/nrm/nrm_selection_page.dart'; 
+// Jika file NrmSelectionPage ada di features/nrm/, gunakan:
+// import '../features/nrm/nrm_selection_page.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -39,8 +48,6 @@ class _DashboardPageState extends State<DashboardPage> {
       },
       child: Scaffold(
         backgroundColor: bgWhite,
-
-        // TIDAK ADA LAGI FLOATING ACTION BUTTON DI BAWAH
         floatingActionButton: null, 
 
         body: Column(
@@ -50,7 +57,7 @@ class _DashboardPageState extends State<DashboardPage> {
             // ==========================================
             Container(
               padding: const EdgeInsets.only(
-                  top: 50, bottom: 25, left: 20, right: 25), // Padding disesuaikan
+                  top: 50, bottom: 25, left: 20, right: 25),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -71,20 +78,19 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
               child: Column(
                 children: [
-                  // BARIS 1: TOMBOL BACK & LOGO & TEKS
                   Row(
                     children: [
-                      // --- TOMBOL BACK (SUDUT KIRI ATAS) ---
+                      // Tombol Back
                       IconButton(
                         onPressed: _goBackToLanding,
                         icon: Icon(Icons.arrow_back_ios_new, color: accentGold, size: 22),
                         padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(), // Agar tidak makan tempat
+                        constraints: const BoxConstraints(), 
                       ),
                       
-                      const SizedBox(width: 15), // Jarak tombol ke logo
+                      const SizedBox(width: 15), 
 
-                      // LOGO METHODIST
+                      // Logo Methodist
                       Container(
                         padding: const EdgeInsets.all(2),
                         decoration: BoxDecoration(
@@ -92,7 +98,7 @@ class _DashboardPageState extends State<DashboardPage> {
                           border: Border.all(color: accentGold, width: 2),
                         ),
                         child: CircleAvatar(
-                          radius: 24, // Sedikit diperkecil agar proporsional
+                          radius: 24, 
                           backgroundColor: Colors.white,
                           child: Padding(
                             padding: const EdgeInsets.all(4.0),
@@ -103,7 +109,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       
                       const SizedBox(width: 15),
                       
-                      // TEKS SAMBUTAN
+                      // Teks Sambutan
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,7 +127,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               "Dashboard\nMethodist",
                               style: TextStyle(
                                 color: accentGold,
-                                fontSize: 20, // Sedikit disesuaikan
+                                fontSize: 20, 
                                 fontWeight: FontWeight.bold,
                                 fontFamily: 'Serif',
                                 height: 1.1,
@@ -142,35 +148,29 @@ class _DashboardPageState extends State<DashboardPage> {
             Expanded(
               child: GridView.count(
                 padding: const EdgeInsets.all(25),
-                crossAxisCount: 2, // 2 Kolom
+                crossAxisCount: 2, 
                 crossAxisSpacing: 20,
                 mainAxisSpacing: 20,
                 childAspectRatio: 0.9,
                 children: [
+                  // 1. BUKU ENDE (Arahkan ke BemPage)
                   _menuCard(
                     "Buku Ende", "Puji-pujian", Icons.library_music_rounded, Colors.blue.shade900,
+                    // Pastikan nama class di bem_page.dart adalah BemPage atau BukuEndePage
                     () => Navigator.push(context, MaterialPageRoute(builder: (_) => const BukuEndePage())),
                   ),
+                  
+                  // 2. KUMPULAN DOA (Arahkan ke DashboardDoaPage)
                   _menuCard(
-                    "Doa Bapa Kami", "Doa Tuhan", Icons.volunteer_activism_rounded, Colors.teal.shade800,
-                    () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DoaBapaKamiPage())),
+                    "Doa-Doa", "Gereja Methodist", Icons.volunteer_activism_rounded, Colors.teal.shade800,
+                    () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DashboardDoaPage())),
                   ),
-                  _menuCard(
-                    "Pengakuan Iman", "Rasuli", Icons.verified_user_rounded, Colors.indigo.shade900,
-                    () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PengakuanImanRasuliPage())),
-                  ),
-                  _menuCard(
-                    "Pengakuan Dosa", "Doa Pertobatan", Icons.favorite_rounded, Colors.red.shade800,
-                    () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DoaPengampunanDosaPage())),
-                  ),
+                  
+                  // 3. NRM (Arahkan ke NrmSelectionPage)
                   _menuCard(
                     "NRM", "Nyanyian Rohani", Icons.menu_book_rounded, Colors.brown.shade700,
-                    () => Navigator.push(context, MaterialPageRoute(builder: (_) => const NrmPage())),
-                  ),
-                  _menuCard(
-                    "Database Jemaat", "Dalam Pengembangan", Icons.groups_rounded, Colors.grey,
-                    () {},
-                    isLocked: true,
+                    // Pastikan nama class di nrm_selection_page.dart adalah NrmSelectionPage
+                    () => Navigator.push(context, MaterialPageRoute(builder: (_) => const NrmSelectionPage())),
                   ),
                 ],
               ),

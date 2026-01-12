@@ -47,13 +47,13 @@ class DatabaseHelper {
       // Ambil semua daftar file aset
       final List<String> assets = assetManifest.listAssets();
 
-      // Filter hanya yang ada di folder md
+      // Filter hanya yang ada di folder BEM_teks
       final filePaths = assets
-          .where((String key) => key.contains('assets/md/') && key.endsWith('.md'))
+          .where((String key) => key.contains('assets/BEM/BEM_teks/') && key.endsWith('.md'))
           .toList();
 
       if (filePaths.isEmpty) {
-        print("⚠️ PERINGATAN: Folder assets/md/ kosong atau tidak terdaftar di pubspec.yaml");
+        print("⚠️ PERINGATAN: Folder assets/BEM/BEM_teks/ kosong atau tidak terdaftar di pubspec.yaml");
         return;
       }
 
