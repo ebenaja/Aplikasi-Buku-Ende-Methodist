@@ -11,7 +11,7 @@ class DashboardDoaPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // --- PALET WARNA ---
     final Color primaryNavy = const Color(0xFF0D1B2A);
-    final Color secondaryNavy = const Color(0xFF1B263B);
+    //final Color secondaryNavy = const Color(0xFF1B263B);
     final Color accentGold = const Color(0xFFD4AF37);
     final Color bgWhite = const Color(0xFFF4F6F8);
 
